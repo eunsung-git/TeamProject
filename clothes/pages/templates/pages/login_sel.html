@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block body %}
+   
+<center>
+    <br><br><br><br><br>
+
+    <a href="{% url 'pages:closet' %}">옷 수정</a>
+    <a href="{% url 'pages:profile_detail' %}">회원정보 수정</a>
+
+    <form action="{% url 'pages:recom' %}">
+        <fieldset style="width:300px; height: 200px;">
+
+                <!-- 날짜 -->
+                <span style="font-size: 20px;">날짜</span> 
+                <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+                <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+                <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+                <script src="./jquery-ui-1.12.1/datepicker-ko.js"></script>
+
+                <script>
+                    $(function() {
+                        $( "#Datepicker" ).datepicker({
+                            changeMonth: true, 
+                            changeYear: true,
+                            nextText: '다음 달',
+                            prevText: '이전 달',
+                            minDate: 0, 
+                            maxDate: "+9D",
+                            dateFormat: "yy-mm-dd",
+                        });
+                    });
+                </script>
+                <input type="text" id="Datepicker">  <br><br>
+                
+                
+            <!-- 추천 버튼 대신 돋보기 버튼 -->
+            <input type='submit' value='추천' style="width:60px; height: 40px; font-size: 20px;">
+            <!-- <button type="submit"><img src="" alt="submit">추천</button> -->
+
+        </fieldset>
+    </form>
+</center>
+        
+{% endblock %}

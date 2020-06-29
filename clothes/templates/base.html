@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style type="text/css">
+        body {
+            text-align: center;
+            overflow:scroll;
+            position: relative;
+            /* position: absolute; */
+            margin: 0 auto;
+            margin-left: auto; 
+            margin-right: auto;
+            margin-top: auto;
+            margin-bottom: auto;
+        }
+        fieldset {
+            display:inline-block;
+            text-align: left;
+        }
+    </style>
+    
+</head>
+<body>
+    <nav>
+        {% if user.is_authenticated %}
+            <a href="{% url 'pages:profile_detail' %}" style="background-color:yellow; font-size: 24px;">
+                {{ user.username }} 님, 안녕하세요!
+            </a>
+            <!-- <span style="background-color:yellow; font-size: 24px;">{{ user.username }} 님, 안녕하세요!</span> -->
+             <form action="{% url 'pages:logout' %}" method="POST">
+                {% csrf_token %}
+                <input type="submit" value='Logout'>
+            </form>
+        {% else %}
+            <a href="{% url 'pages:login' %}">Login</a>
+            <a href="{% url 'pages:signup' %}">Signup</a>
+        {% endif %}
+    </nav>
+
+    {% block body %}
+
+    {% endblock %}
+</body>
+</html>

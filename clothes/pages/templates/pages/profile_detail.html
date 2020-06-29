@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1 align='center'>Profile</h1>
+
+<fieldset style="width:300px; height: 200px; border:1 solid blue;">
+    <p>Username : {{ profile.user.username }}</p>
+    <p>Region : {{ profile.region }}</p>
+
+    {% if user == profile.user %}
+    <a href="{% url 'pages:profile_edit' %}">지역 수정</a>
+    <a href="{% url 'pages:edit' %}">ID/PW 수정</a>
+    {% endif %}
+</fieldset>
+</body>
+</html>
+
+
+
+

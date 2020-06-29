@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<!-- <center> -->
+    <br><br><br><br><br><h1 style="font-size: 36px; text-align: center;">회원가입</h1> <br><br>
+    <fieldset style="width:800px; height: 500px; ">
+        <legend style="font-size: 30px; text-align: center;">정보 입력</legend>
+            <form action="" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+
+                <span style="font-size: 16px;">지역</span> 
+                {{ profile_form.region }}
+                <a id="region-search">Search</a>
+                <ul id="region-result"></ul>
+                
+                <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+                <script>
+                    var regionInput = document.getElementById('id_region')
+                    var searchButton = document.getElementById('region-search')
+                    var regionResult = document.getElementById('region-result')
+
+                    searchButton.addEventListener('click', function () {
+                        dong = regionInput.value
+
+                        regionResult.innerHTML = '<li>Searching...</li>'
+                        axios.get('/search_region/',  {
+                                        params: {
+                                            dong: dong
+                                        }
+                                    })
+                                .then(function (response) {
+                                    regions = response.data.jibuns.map(function (region) {
+                                        return region.join(' ')
+                                    })
+                                    regionResult.innerHTML = ''
+                                    regions.forEach(function (region) {
+                                        const li = document.createElement('li')
+                                        li.classList.add('region-result-item')
+                                        li.append(region)
+                                        regionResult.append(li)
+                                    })
+
+                                    items = document.querySelectorAll('.region-result-item')
+                                    items.forEach(function (element) {
+                                        element.addEventListener('click', function (e) {
+                                                regionInput.value = e.target.innerText
+                                                regionResult.innerHTML = ''
+                                            })
+                                        })
+                                })
+                    })
+                </script><br><br>
+
+
+                <!-- 성별 -->
+                <span style="font-size: 16px;">성별</span> 
+                {{ profile_form.gender }}
+                <br><br>
+
+                <!-- 추천 버튼 대신 돋보기 버튼 -->
+                <input type="submit" value="가입하기" style="width:100px; height: 50px; font-size: 20px;">
+                <!-- <button type="submit"><img src="" alt="submit">추천</button> -->
+            </form>
+
+    </fieldset>
+<!-- </center> -->
+  
+{% endblock %}

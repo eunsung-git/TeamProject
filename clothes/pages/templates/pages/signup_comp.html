@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+    <!-- 회원가입완료 / 로그인 창으로 가기 -->
+    <h1>회원가입 완료!</h1>
+    
+    <fieldset style="width:400px; height: 220px;">
+        <form action="{% url 'pages:login_sel' %}">  
+            <span style="font-size: 20px;">ID</span>   
+            <input type = "text" name = "id"/><br><br>
+
+            <span style="font-size: 20px;">Password</span> 
+            <input type = "password" name = "password"/><br><br>
+            
+            <!-- 추천 버튼 대신 돋보기 버튼 -->
+            <input type='submit' name="login" value='로그인' style="width:80px; height: 50px; font-size: 20px;">
+            <br><br>
+        </form>
+    </fieldset>
+
+{% endblock %}

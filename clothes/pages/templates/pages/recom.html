@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+<!-- 날씨 data 띄우기 -->
+<h2 style="font-size: 30px;">날씨 정보</h2>
+
+<div class="weather" style="border: 1px solid black;">
+    <div style="width:250px; height:150px; border:1px solid black; float:left;">
+        {{ weather_mor }} 최저 {{ temp_mor }}℃ 
+        {% if weather_mor == 'ws1' %} 맑음
+        {% elif weather_mor == 'ws5' %} 구름많음
+        {% elif weather_mor == 'ws7' %} 흐림
+        {% elif weather_mor == 'ws9' %} 비
+        {% elif weather_mor == 'ws22' %} 흐리고 가끔 비
+        {% endif %}
+    </div>
+            <!-- 날씨가 더 추가될 가능성 있음 -->
+    <div style="width:250px; height:150px; border:1px solid black; float:left;">
+        {{ weather_aft }} 최고 {{ temp_aft }}℃
+        {% if weather_aft  == 'ws1' %} 맑음
+        {% elif weather_aft  == 'ws5' %} 구름많음
+        {% elif weather_aft  == 'ws7' %} 흐림
+        {% elif weather_aft  == 'ws9' %} 비
+        {% elif weather_aft  == 'ws22' %} 흐리고 가끔 비
+        {% endif %}
+    </div>
+</div>  <br><br><br><br><br><br><br>
+
+<!-- 추천 style 띄우기 -->
+<h2 style="font-size: 30px;">오늘 뭐 입지?</h2>
+    <div class= "recom_style" style="margin-right:60px; float:left;">
+        <div style="float:left;">
+            <div style="width:350px; height:250px; border:1px solid red;">
+                {{ 상의 }}
+            </div>
+            <div style="width:350px; height:250px; border:1px solid green;">
+                {{ 하의 }}
+            </div>
+            <div style="width:300px; height:150px; border:1px solid violet;">
+                {{ 신발 }}
+            </div>          
+        </div>
+
+        <div style="float:left;">
+            <div style="width:300px; height:300px; border:1px solid red;">
+                {% if 아우터 %}
+                    {{ 아우터 }}
+                {% endif %}
+            </div>
+            <div style="width:300px; height:200px; border:1px solid blue;">
+                {% if 우산 %}
+                    {{ 우산 }}
+                {% endif %}
+            </div>
+            <div style="width:300px; height:150px; border:1px solid green;">
+            </div> 
+        </div>
+    </div>
+    
+    <!-- 'weather_mor': weather_mor, 'weather_aft': weather_aft, 
+    'temp_mor': temp_mor, 'temp_aft': temp_aft, 
+    # 옷 items 추가
+    'brand1': brand1, 'name1': item1, 'link1': link1, 'price1': price1, 'image1': image1,
+    'brand2': brand2, 'name2': item2, 'link2': link2, 'price2': price2, 'image2': image2,  -->
+
+<!-- 쇼핑몰 link 띄우기 -->
+    <div style="float:left;">
+        <div style="float: left;">
+            <div style="width:150px; height:200px; border:1px solid black; ">
+                <a href="{{ link1 }}"><img src="{{ image1 }}"/></a>
+                {{ brand1 }} 
+                {{ name1 }}
+                {{ price1 }}
+            </div>
+            <div style="width:150px; height:200px; border:1px solid black; ">
+                <a href="{{ link2 }}"><img src="{{ image2 }}"/></a>
+                {{ brand2 }} 
+                {{ name2 }}
+                {{ price2 }}
+            </div>
+        </div>
+
+        <div style="float: left;">
+            <div style="width:150px; height:200px; border:1px solid black; ">
+                <a href="{{ link3 }}"><img src="{{ image3 }}"/></a>
+                {{ brand3 }} 
+                {{ name3 }}
+                {{ price3 }}
+            </div>
+            <div style="width:150px; height:200px; border:1px solid black; ">
+                <a href="{{ link4 }}"><img src="{{ image4 }}"/></a>
+                {{ brand4 }} 
+                {{ name4 }}
+                {{ price4 }}
+            </div>
+        </div>
+
+        <div style="float: left;">
+            <div style="width:150px; height:200px; border:1px solid black; ">
+                <a href="{{ link5 }}"><img src="{{ image5 }}"/></a>
+                {{ brand5 }} 
+                {{ name5 }}
+                {{ price5 }}
+            </div>
+            <div style="width:150px; height:200px; border:1px solid black; ">
+                <a href="{{ link6 }}"><img src="{{ image6 }}"/></a>
+                {{ brand6 }} 
+                {{ name6 }}
+                {{ price6 }}
+            </div>
+        </div>
+    </div>
+
+<!-- tip 띄우기 -->
+
+<!-- <div id="popup" style="color:black; position:absolute; text-align:center; bottom:100px; left:100px; width:50px; height:50px; background-color: chartreuse;">
+    <script src=""></script>
+</div> -->
+
+<!-- <input type="button" value="팝업창 호출" /><img src="" alt="submit"> -->
+<button type="submit" onclick="showPopup();"><img src="">추천</button>
+
+<script language="javascript">
+    function showPopup() { window.open("/pages/recom/tips/", "tips", "width=700, height=400, left=100, top=50"); }
+</script>
+
+</body>
+</html>

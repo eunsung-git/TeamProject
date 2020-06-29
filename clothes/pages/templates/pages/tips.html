@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- item1~item4 -->
+    <h1>Tips</h1>
+    <!-- 
+        'tip_link1': tip_link1, 'tip_thumbnail1': tip_thumbnail1,
+        'tip_link2': tip_link2, 'tip_thumbnail2': tip_thumbnail2,
+        'tip_link3': tip_link3, 'tip_thumbnail3': tip_thumbnail3,
+        'tip_link4': tip_link4, 'tip_thumbnail4': tip_thumbnail4, -->
+
+    <div style="width:200px; height:150px; border:1px solid red; float:left;">
+        <div style="width:150px; height:150px; border:1px solid red;">
+            <a href="{{ tip_link1 }}"><img src="{{ tip_thumbnail1 }}"/></a>
+        </div>
+        <div style="width:150px; height:150px; border:1px solid green;">
+            <a href="{{ tip_link1 }}"><img src="{{ tip_thumbnail1 }}"/></a>
+        </div>
+    </div>
+
+    <div style="width:200px; height:150px; border:1px solid green; float:left;">
+        <div style="width:150px; height:150px; border:1px solid red;">
+            <a href="{{ tip_link1 }}"><img src="{{ tip_thumbnail1 }}"/></a>
+        </div>
+        <div style="width:150px; height:150px; border:1px solid green;">
+            {% if tip_link4 and tip_thumbnail4 %}
+                    <a href="{{ tip_link4 }}"><img src="{{ tip_thumbnail4 }}"/></a>
+            {% endif %}
+        </div>
+    </div>
+
+    <input type="button" value="닫기" onclick="self.close();" />
+</body>
+</html>

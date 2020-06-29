@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1 align="center">My Clothes</h1>
+
+    <a href="{% url 'pages:clothes' %}">New clothes</a>   <br><br>
+  
+    <!-- <ul> -->
+    <div style="float:center;">
+        {% for clothes in clothes_list %}
+
+              <li>
+                {{ clothes.category.name }}: 
+                  <img src="{{ clothes.image.url }}" alt="{{ clothes.image.url }}" width="200">
+                  <span>Color: {{ clothes.color }}</span>
+                  <form action="{% url 'pages:closet_delete' clothes.pk %}" method="POST" style="display: inline-block;">
+                      {% csrf_token %}
+                      <input type="submit" value='삭제'>
+                  </form>
+              </li>
+
+          {% endfor %}
+    </div>
+      
+    <!-- </ul> -->
+</body>
+</html>
