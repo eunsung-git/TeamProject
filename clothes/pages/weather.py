@@ -24,14 +24,9 @@ def weather(date, region):
     si = regions[1]
     dong = regions[2]
 
-    # 서울특별시+종로구+청운효자동
     source = requests.get('https://search.naver.com/search.naver?sm=top_hty&fbm=1&ie=utf8&query='+do+si+dong+'날씨').text
 
-    # category : PTY 0, REH 76, RN1 0, T1H 20.5, UUU -0.1, VEC 23, VVV -0.4, WSD 0.5
-
     soup = BeautifulSoup(source, 'html.parser')
-
-    # ws1 : 해, ws5 : 구름많음, ws7:흐림, ws9 : 비, ws22 : 흐리고 가끔 비
 
     # 날씨 아이콘 출력
     lists = []

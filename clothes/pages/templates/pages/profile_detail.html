@@ -3,20 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>{{ profile.user.username }}'s Profile</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <style type="text/css">
+        body {
+        background-image: url('../static/4.jpg');
+        background-repeat: no-repeat;
+        background-size: cover;
+        }
+    </style>
 </head>
 <body>
-    <h1 align='center'>Profile</h1>
+    <!-- closet nav 복붙 -->
+    <nav>
+        {% if user.is_authenticated %}
+            <a href="{% url 'pages:profile_detail' %}" style="background-color:black; font-size: 24px; color:white;">
+                {{ user.username }}
+            </a>
+            <!-- <span style="background-color:yellow; font-size: 24px;">{{ user.username }} 님, 안녕하세요!</span> -->
+             <form action="{% url 'pages:logout' %}" method="POST">
+                {% csrf_token %}
+                <!-- <input type="submit" value='Logout'> -->
+                <input class='btn btn-secondary btn-sm' type='submit' value='Logout'>
+            </form>
+        {% else %}
+            <a href="{% url 'pages:login' %}">Login</a>
+            <a href="{% url 'pages:signup' %}">Signup</a>
+        {% endif %}
+      </nav>
 
-<fieldset style="width:300px; height: 200px; border:1 solid blue;">
-    <p>Username : {{ profile.user.username }}</p>
-    <p>Region : {{ profile.region }}</p>
+      <center>
+        <br><br><br><br><br><br><br><br><br><br>
+        <h1 style="color: white;" align='center'>{{ user.username }}'s Profile</h1><br><br>
+        
+        <fieldset style="width:400px; height: 200px; border:1 solid blue;">
+            <p>이름 : {{ profile.user.username }}</p>
+            <p>성별 : {{ profile.gender }}</p>
+            <p>지역 : {{ profile.region }}</p>
+            <br>
 
-    {% if user == profile.user %}
-    <a href="{% url 'pages:profile_edit' %}">지역 수정</a>
-    <a href="{% url 'pages:edit' %}">ID/PW 수정</a>
-    {% endif %}
-</fieldset>
+            {% if user == profile.user %}
+            <!-- <a href="{% url 'pages:profile_edit' %}">지역 Update</a>
+            <a href="{% url 'pages:edit' %}">ID/pw Update</a> -->
+            <a class="btn btn-dark" href="{% url 'pages:profile_edit' %}" role="button">Profile Update</a>
+            <a class="btn btn-dark" href="{% url 'pages:edit' %}" role="button">ID/pw Update</a>
+            <a class="btn btn-dark" href="{% url 'pages:closet' %}" role="button">My Closet</a>
+            {% endif %}
+        </fieldset>
+
+        <a class="btn btn-primary" href="{% url 'pages:login_sel' %}" role="button">Styling</a>
+      </center>
+    
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
 </body>
 </html>
 

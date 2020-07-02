@@ -11,7 +11,7 @@ class Profile(models.Model):
         max_length=2,
         choices=GENDER_CHOICES,)
 
-    region = models.CharField(max_length=30) 
+    region = models.CharField(max_length=30,) 
 
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 

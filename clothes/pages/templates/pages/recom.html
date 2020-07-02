@@ -1,134 +1,219 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>{{ user.username }}'s Daily Styling</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <style type="text/css">
+        body {
+            overflow:scroll;
+        }
+    </style>
 </head>
 <body>
 
+    <nav>
+        {% if user.is_authenticated %}
+            <a href="{% url 'pages:profile_detail' %}" style="color:white; font-size: 24px; background-color: black;">
+                {{ user.username }}
+            </a>
+             <form action="{% url 'pages:logout' %}" method="POST">
+                {% csrf_token %}
+                <!-- <input type="submit" value='Logout'> -->
+                <input class='btn btn-secondary btn-sm' type='submit' value='Logout'>
+            </form>
+        {% else %}
+            <a href="{% url 'pages:login' %}">Login</a>
+            <a href="{% url 'pages:signup' %}">Signup</a>
+        {% endif %}
+    </nav>
+
 <!-- 날씨 data 띄우기 -->
-<h2 style="font-size: 30px;">날씨 정보</h2>
-
-<div class="weather" style="border: 1px solid black;">
-    <div style="width:250px; height:150px; border:1px solid black; float:left;">
-        {{ weather_mor }} 최저 {{ temp_mor }}℃ 
-        {% if weather_mor == 'ws1' %} 맑음
-        {% elif weather_mor == 'ws5' %} 구름많음
-        {% elif weather_mor == 'ws7' %} 흐림
-        {% elif weather_mor == 'ws9' %} 비
-        {% elif weather_mor == 'ws22' %} 흐리고 가끔 비
-        {% endif %}
-    </div>
-            <!-- 날씨가 더 추가될 가능성 있음 -->
-    <div style="width:250px; height:150px; border:1px solid black; float:left;">
-        {{ weather_aft }} 최고 {{ temp_aft }}℃
-        {% if weather_aft  == 'ws1' %} 맑음
-        {% elif weather_aft  == 'ws5' %} 구름많음
-        {% elif weather_aft  == 'ws7' %} 흐림
-        {% elif weather_aft  == 'ws9' %} 비
-        {% elif weather_aft  == 'ws22' %} 흐리고 가끔 비
-        {% endif %}
-    </div>
-</div>  <br><br><br><br><br><br><br>
-
-<!-- 추천 style 띄우기 -->
-<h2 style="font-size: 30px;">오늘 뭐 입지?</h2>
-    <div class= "recom_style" style="margin-right:60px; float:left;">
-        <div style="float:left;">
-            <div style="width:350px; height:250px; border:1px solid red;">
-                {{ 상의 }}
+<center>
+    <h2 style="font-size: 32px; font-weight: bold;">날씨 정보</h2><br>
+    <fieldset style="width:500px; height: 100px; border:1 solid blue;">
+        <div align='center' class="weather" style="margin: 0 auto;">
+            <div style="width:250px; height:290px; border:1px solid black; float:left;">
+                <span>오전</span>
+                {% if weather_mor == 'ws1' %} 
+                <img src="{% static 'ws1.png' %}" alt="ws1" width="250px" height="200px"> <br>
+                <span style="font-size: 20px; text-align: center; font-weight: bold;">맑음</span>
+                {% elif weather_mor == 'ws5' %} 
+                <img src="{% static 'ws5.png' %}" alt="ws5" width="250px" height="200px"> <br>
+                <span style="font-size: 20px; text-align: center; font-weight: bold;">구름많음</span>
+                {% elif weather_mor == 'ws7' %} 
+                <img src="{% static 'ws7.png' %}" alt="ws7" width="250px" height="200px"> <br>
+                <span style="font-size: 20px; text-align: center; font-weight: bold;">흐림</span>
+                {% elif weather_mor == 'ws9' %} 
+                <img src="{% static 'ws9.png' %}" alt="ws9" width="250px" height="200px"> <br>
+                <span style="font-size: 20px; text-align: center; font-weight: bold;">비</span>
+                {% elif weather_mor == 'ws22' %} 
+                <img src="{% static 'ws22.png' %}" alt="ws22" width="250px" height="200px"><br> 
+                <span style="font-size: 20px; text-align: center; font-weight: bold;">흐리고 가끔 비</span>
+                {% elif weather_mor == 'ws15' %} 
+                <img src="{% static 'ws15.png' %}" alt="ws15" width="250px" height="200px"> <br>
+                <span style="font-size: 20px; text-align: center; font-weight: bold;">흐리고 한때 소나기</span>
+                {% endif %}
+                <br>
+                <span>최저 {{ temp_mor }}℃</span>
             </div>
-            <div style="width:350px; height:250px; border:1px solid green;">
-                {{ 하의 }}
+        <!-- 날씨가 더 추가될 가능성 있음 -->
+            <div style="width:250px; height:290px; border:1px solid black; float:left;">
+                <span>오전</span>
+                {% if weather_aft == 'ws1' %} 
+                <img src="{% static 'ws1.png' %}" alt="ws1" width="250px" height="200px"><br>
+                <span style="font-size: 20px; text-align: center; font-weight: bold;">맑음</span>
+                {% elif weather_aft == 'ws5' %} 
+                <img src="{% static 'ws5.png' %}" alt="ws5" width="250px" height="200px"><br>
+                <span style="font-size: 20px; text-align: center; font-weight: bold;">구름많음</span>
+                {% elif weather_aft == 'ws7' %} 
+                <img src="{% static 'ws7.png' %}" alt="ws7" width="250px" height="200px"> <br>
+                <span style="font-size: 20px; text-align: center; font-weight: bold;">흐림</span>
+                {% elif weather_aft == 'ws9' %} 
+                <img src="{% static 'ws9.png' %}" alt="ws9" width="250px" height="200px"> <br>
+                <span style="font-size: 20px; text-align: center; font-weight: bold;">비</span>
+                {% elif weather_aft == 'ws22' %} 
+                <img src="{% static 'ws22.png' %}" alt="ws22" width="250px" height="200px"> <br>
+                <span style="font-size: 20px; text-align: center; font-weight: bold;">흐리고 가끔 비</span>
+                {% elif weather_aft == 'ws15' %} 
+                <img src="{% static 'ws15.png' %}" alt="ws15" width="250px" height="200px"> <br>
+                <span style="font-size: 20px; text-align: center; font-weight: bold;">흐리고 한때 소나기</span>
+                {% endif %}
+                <br>
+                <span>최고 {{ temp_aft }}℃</span>
             </div>
-            <div style="width:300px; height:150px; border:1px solid violet;">
-                {{ 신발 }}
-            </div>          
+        </div>  
+    </fieldset>
+</center>
+<br><br><br><br><br><br><br><br><br><br>
+
+<center>
+    <fieldset style="width:1250px; height: 880px; border:1 solid black;">
+        <!-- 추천 style 띄우기 -->
+        <h2 style="font-size: 36px; font-weight: bold;">오늘 뭐 입지?</h2> <br>
+        <div class= "recom_style" style="margin-right:100px; float:left;">
+            <div style="float:left;">
+                <div style="width:400px; height:300px; border:1px solid black;">
+                    <img src="{{ image_list.0.url }}" alt="{{ image_list.0 }}" width="398px" height="300px">
+                </div>
+                <div style="width:400px; height:300px; border:1px solid black;">
+                    <img src="{{ image_list.1.url }}" alt="{{ image_list.1 }}" width="398px" height="300px">
+                </div>
+                {% if image_list|length == 3 %}
+                <div style="width:400px; height:180px; border:1px solid black;">
+                    <img src="{{ image_list.2.url }}" alt="{{ image_list.2 }}" width="398px" height="180px">
+                </div>
+                {% endif %}          
+            </div>
+
+            <div style="float:left;">
+                {% if image_list|length == 4 %}
+                <div style="width:330px; height:300px; border:1px solid black;">
+                    <img src="{{ image_list.3.url }}" alt="{{ image_list.3.url }}" width="330px" height="300px"> 
+                </div>
+                {% endif %}
+                <!-- <div style="width:350px; height:300px; border:1px solid black;"> -->
+                
+                {% if weather_mor == 'ws9' or weather_mor == 'ws22' or weather_mor == 'ws15' %}
+                    <div style="width:330px; height:300px; border:1px solid white;"></div>
+                        <img src="../static/umbrella.jpg" alt="umbrella" width="320px" height="290px">
+                    </div>
+                {% elif weather_aft == 'ws9' or weather_aft == 'ws22' or weather_aft == 'ws15'%}
+                    <div style="width:330px; height:300px; border:1px solid white;"></div>
+                        <img src="../static/umbrella.jpg" alt="umbrella" width="320px" height="290px">
+                    </div>   
+                {% endif %}
+                <!-- </div> -->
+                <!-- <div style="width:350px; height:150px; border:1px solid green;">
+                </div>  -->
+            </div>
         </div>
 
+        <!-- 쇼핑몰 link 띄우기 -->
         <div style="float:left;">
-            <div style="width:300px; height:300px; border:1px solid red;">
-                {% if 아우터 %}
-                    {{ 아우터 }}
+            <div style="float: left;">
+                <div style="width:210px; height:250px; border:1px solid black; ">
+                    <a href="{{ url_list.0 }}"><img src="{{ shop_image_list.0 }}" width="205px" height="180px"/></a>
+                    <span style="font-weight: bold;">{{ brand_list.0 }}</span>
+                    <span>{{ name_list.0 }}</span>
+                    <span style="font-weight: bold;">{{ price_list.0 }}</span>
+                </div>
+                <div style="width:210px; height:250px; border:1px solid black; ">
+                    <a href="{{ url_list.2 }}"><img src="{{ shop_image_list.2 }}" width="205px" height="180px"/></a>
+                    <span style="font-weight: bold;">{{ brand_list.2 }}</span>
+                    <span>{{ name_list.2 }}</span>
+                    <span style="font-weight: bold;">{{ price_list.2 }}</span>
+                </div>
+                {% if url_list.4 %}
+                <div style="width:210px; height:250px; border:1px solid black; ">
+                    <a href="{{ url_list.4 }}"><img src="{{ shop_image_list.4 }}" width="205px" height="180px"/></a>
+                    <span style="font-weight: bold;">{{ brand_list.4 }}</span>
+                    <span>{{ name_list.4 }}</span>
+                    <span style="font-weight: bold;">{{ price_list.4 }}</span>
+                </div>
                 {% endif %}
             </div>
-            <div style="width:300px; height:200px; border:1px solid blue;">
-                {% if 우산 %}
-                    {{ 우산 }}
+
+            <div style="float: left;">
+                <div style="width:210px; height:250px; border:1px solid black; ">
+                    <a href="{{ url_list.1 }}"><img src="{{ shop_image_list.1 }}" width="205px" height="180px"/></a>
+                    <span style="font-weight: bold;">{{ brand_list.1 }}</span>
+                    <span>{{ name_list.1 }}</span>
+                    <span style="font-weight: bold;">{{ price_list.1 }}</span>
+                </div>
+                <div style="width:210px; height:250px; border:1px solid black; ">
+                    <a href="{{ url_list.3 }}"><img src="{{ shop_image_list.3 }}" width="205px" height="180px"/></a>
+                    <span style="font-weight: bold;">{{ brand_list.3 }}</span>
+                    <span>{{ name_list.3 }}</span>
+                    <span style="font-weight: bold;">{{ price_list.3 }}</span>
+                </div>
+                {% if url_list.5 %}
+                <div style="width:210px; height:250px; border:1px solid black; ">
+                    <a href="{{ url_list.5 }}"><img src="{{ shop_image_list.5 }}" width="205px" height="180px"/></a>
+                    <span style="font-weight: bold;">{{ brand_list.5 }}</span>
+                    <span>{{ name_list.5 }}</span>
+                    <span style="font-weight: bold;">{{ price_list.5 }}</span>
+                </div>
                 {% endif %}
             </div>
-            <div style="width:300px; height:150px; border:1px solid green;">
-            </div> 
         </div>
-    </div>
-    
-    <!-- 'weather_mor': weather_mor, 'weather_aft': weather_aft, 
-    'temp_mor': temp_mor, 'temp_aft': temp_aft, 
-    # 옷 items 추가
-    'brand1': brand1, 'name1': item1, 'link1': link1, 'price1': price1, 'image1': image1,
-    'brand2': brand2, 'name2': item2, 'link2': link2, 'price2': price2, 'image2': image2,  -->
-
-<!-- 쇼핑몰 link 띄우기 -->
-    <div style="float:left;">
-        <div style="float: left;">
-            <div style="width:150px; height:200px; border:1px solid black; ">
-                <a href="{{ link1 }}"><img src="{{ image1 }}"/></a>
-                {{ brand1 }} 
-                {{ name1 }}
-                {{ price1 }}
-            </div>
-            <div style="width:150px; height:200px; border:1px solid black; ">
-                <a href="{{ link2 }}"><img src="{{ image2 }}"/></a>
-                {{ brand2 }} 
-                {{ name2 }}
-                {{ price2 }}
-            </div>
+    </fieldset>
+</center>
+<br><br>
+<center>
+    <fieldset style="width:1260px; height: 200px; border:1 solid blue;">
+    <!-- tip 띄우기 -->
+    <p>
+        <h3>Tips</h3>
+        <div style="width:300px; height:200px; border:1px solid black; float:left; margin-right: 15px;">
+            <a href="{{ tip_url.0 }}"><img src="{{ tip_thumbnail.0 }}" width="300px" height="150px"/></a>
+            <span style="font-weight: bold;">{{ tip_title.0 }}</span>
         </div>
-
-        <div style="float: left;">
-            <div style="width:150px; height:200px; border:1px solid black; ">
-                <a href="{{ link3 }}"><img src="{{ image3 }}"/></a>
-                {{ brand3 }} 
-                {{ name3 }}
-                {{ price3 }}
-            </div>
-            <div style="width:150px; height:200px; border:1px solid black; ">
-                <a href="{{ link4 }}"><img src="{{ image4 }}"/></a>
-                {{ brand4 }} 
-                {{ name4 }}
-                {{ price4 }}
-            </div>
+        <div style="width:300px; height:200px; border:1px solid black; float:left; margin-right: 15px;">
+            <a href="{{ tip_url.1 }}"><img src="{{ tip_thumbnail.1 }}" width="300px" height="150px"/></a>
+            <span style="font-weight: bold;">{{ tip_title.1 }}</span>
         </div>
-
-        <div style="float: left;">
-            <div style="width:150px; height:200px; border:1px solid black; ">
-                <a href="{{ link5 }}"><img src="{{ image5 }}"/></a>
-                {{ brand5 }} 
-                {{ name5 }}
-                {{ price5 }}
-            </div>
-            <div style="width:150px; height:200px; border:1px solid black; ">
-                <a href="{{ link6 }}"><img src="{{ image6 }}"/></a>
-                {{ brand6 }} 
-                {{ name6 }}
-                {{ price6 }}
-            </div>
+        {% if tip_url.2 and tip_thumbnail.2 %}
+        <div style="width:300px; height:200px; border:1px solid black; float:left; margin-right: 15px;">
+            <a href="{{ tip_url.2 }}"><img src="{{ tip_thumbnail.2 }}" width="300px" height="150px"/></a>
+            <span style="font-weight: bold;">{{ tip_title.2 }}</span>
         </div>
-    </div>
+        {% endif %}
+        {% if tip_url.3 and tip_thumbnail.3 %}
+        <div style="width:300px; height:200px; border:1px solid black; float:left;">
+            <a href="{{ tip_url.3 }}"><img src="{{ tip_thumbnail.3 }}" width="300px" height="150px"/></a>
+            <span style="font-weight: bold;">{{ tip_title.3 }}</span>
+        </div>
+        {% endif %}
+    </p>
+    </fieldset>
+</center>
 
-<!-- tip 띄우기 -->
-
-<!-- <div id="popup" style="color:black; position:absolute; text-align:center; bottom:100px; left:100px; width:50px; height:50px; background-color: chartreuse;">
-    <script src=""></script>
-</div> -->
-
-<!-- <input type="button" value="팝업창 호출" /><img src="" alt="submit"> -->
-<button type="submit" onclick="showPopup();"><img src="">추천</button>
-
-<script language="javascript">
-    function showPopup() { window.open("/pages/recom/tips/", "tips", "width=700, height=400, left=100, top=50"); }
-</script>
-
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>    
 </body>
 </html>

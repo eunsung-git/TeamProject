@@ -1,18 +1,56 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <style type="text/css">
+        body {
+        background-image: url('../static/4.jpg');
+        background-repeat: no-repeat;
+        background-size: cover;
+        }
+        #container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .form > ul {
+            text-align: left;
+            color: white;
+        }
+        .form > p {
+            text-align: justify;
+            color: white;
+        }
+        .form > .btn btn-dark {
+            display : block;
+            margin : 0 auto;
+        }
+        .form > span {
+            color: white;
+        }
+    </style>
+</head>
+<body>
 
-{% block body %}
+<center>
+    <br><br><br><br><br>
+    <h1 style="font-size: 45px; text-align: center; color: white;">회원가입</h1> <br><br><br>
+    <!-- fieldset text-align justify -->
+    <fieldset style="width:800px; height: 500px; ">  
+        <!-- <legend style="font-size: 26px; text-align: center; color: white;">정보 입력</legend> --> 
+        
+        <!-- <div id="container"> div 범위가 어디까지?</div> -->
 
-<!-- <center> -->
-    <br><br><br><br><br><h1 style="font-size: 36px; text-align: center;">회원가입</h1> <br><br>
-    <fieldset style="width:800px; height: 500px; ">
-        <legend style="font-size: 30px; text-align: center;">정보 입력</legend>
-            <form action="" method="POST" enctype="multipart/form-data">
+            <form action="" method="POST" enctype="multipart/form-data" class="form">
                 {% csrf_token %}
                 {{ form.as_p }}
-
+                <br>
                 <span style="font-size: 16px;">지역</span> 
                 {{ profile_form.region }}
-                <a id="region-search">Search</a>
+                <a id="region-search">찾기</a>
                 <ul id="region-result"></ul>
                 
                 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -21,7 +59,7 @@
                     var searchButton = document.getElementById('region-search')
                     var regionResult = document.getElementById('region-result')
 
-                    searchButton.addEventListener('click', function () {
+                    var search = function () {
                         dong = regionInput.value
 
                         regionResult.innerHTML = '<li>Searching...</li>'
@@ -35,36 +73,48 @@
                                         return region.join(' ')
                                     })
                                     regionResult.innerHTML = ''
-                                    regions.forEach(function (region) {
+                                    if (regions.length > 0) {
+                                        regions.forEach(function (region) {
+                                            const li = document.createElement('li')
+                                            li.classList.add('region-result-item')
+                                            li.append(region)
+                                            regionResult.append(li)
+                                        })
+
+                                        items = document.querySelectorAll('.region-result-item')
+                                        items.forEach(function (element) {
+                                            element.addEventListener('click', function (e) {
+                                                    regionInput.value = e.target.innerText
+                                                    regionResult.innerHTML = ''
+                                                })
+                                            })
+                                    } else {
                                         const li = document.createElement('li')
                                         li.classList.add('region-result-item')
-                                        li.append(region)
+                                        li.append('검색 결과가 없습니다 :(')
                                         regionResult.append(li)
-                                    })
-
-                                    items = document.querySelectorAll('.region-result-item')
-                                    items.forEach(function (element) {
-                                        element.addEventListener('click', function (e) {
-                                                regionInput.value = e.target.innerText
-                                                regionResult.innerHTML = ''
-                                            })
-                                        })
+                                    }
+                                    
                                 })
-                    })
-                </script><br><br>
-
+                    }
+                    searchButton.addEventListener('click', search)
+                </script>
+                <br>
 
                 <!-- 성별 -->
                 <span style="font-size: 16px;">성별</span> 
                 {{ profile_form.gender }}
-                <br><br>
+                <br><br><br>
 
-                <!-- 추천 버튼 대신 돋보기 버튼 -->
-                <input type="submit" value="가입하기" style="width:100px; height: 50px; font-size: 20px;">
-                <!-- <button type="submit"><img src="" alt="submit">추천</button> -->
+                <input class='btn btn-dark' type='submit' value='가입' style="width:70px; height: 40px; font-size: 20px;">
             </form>
-
     </fieldset>
-<!-- </center> -->
+</center>
   
-{% endblock %}
+   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
+</body>
+</html>

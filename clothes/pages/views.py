@@ -14,11 +14,21 @@ from django.contrib.auth import get_user_model
 from .color_dect import color_dect
 from .weather import weather
 from .shoppingmall import shoppingmall
+from .color_match import color_match
+from .recommendation import recommendation
+from .recommendation2 import recommendation2
+from .tip_link import tip_link
 import random
+from skimage import io
 
 # class 추가 시 from . import class이름
 
 # Create your views here.
+
+top_list = ['후드티','반팔','민소매','맨투맨','니트','긴팔']
+bottom_list = ['치마','청바지','슬렉스','면바지','반바지']
+outer_list = ['코트','패딩','집업','자켓','가디건']
+shoes_list = ['운동화','워커','구두','샌들']
 
 def login(request):
     # if login-ing, return index
@@ -80,7 +90,6 @@ def signup(request):
     }
     return render(request, 'pages/signup.html', context)
 
-
 def clothes(request): # 옷 업로드
     if request.method == 'POST':
         form = MultipleImageForm(request.POST, request.FILES)
@@ -88,7 +97,7 @@ def clothes(request): # 옷 업로드
             category_id = request.POST.get('category')
             images = request.FILES.getlist('images')
             for image in images:
-                color = color_dect(image, False)
+                color = color_dect(image)
                 clothes = Closet.objects.create(
                                 category_id=category_id,
                                 image=image,
@@ -132,59 +141,6 @@ def login_sel(request): # GET
     }
     return render(request, 'pages/login_sel.html', context)
 
-def shoppingmall(request):
-    item = request.GET.get('item')
-
-    result = []
-
-    url = 'https://search.musinsa.com/search/musinsa/?q={}'.format(item)
-    resp = requests.get(url)
-    
-    soup = BeautifulSoup(resp.text)
-    
-    item1 = soup.select_one('#searchList > li:nth-of-type(1) > div.li_inner')
-    item1_info = item1.find('a')
-    item1_link = item1_info['href']
-    item1_name = item1_info['title']
-    
-    item1_brand = item1.find('p',{'class':'item_title'}).text
-    item1_price = item1.find('p',{'class':'price'})
-    
-    item1_img_url = item1.find('img')['data-original']
-    urllib.request.urlretrieve('http:'+item1_img_url, item+'1.jpg')
-
-    item_1 = {'brand':item1_brand,'name':item1_name, 'link':item1_link,'price':item1_price.text.split()[0],'img_url':item1_img_url}
-    item_1_list = list(item_1.values())
-    
-    item2 = soup.select_one('#searchList > li:nth-of-type(2) > div.li_inner')
-    item2_info = item2.find('a')
-    item2_link = item2_info['href']
-    item2_name = item2_info['title']
-    
-    item2_brand = item2.find('p',{'class':'item_title'}).text
-    item2_price = item2.find('p',{'class':'price'})
-    
-    item2_img_url = item2.find('img')['data-original']
-    urllib.request.urlretrieve('http:'+item2_img_url,item+'2.jpg')
-
-    item_2 = {'brand':item2_brand,'name':item2_name, 'link':item2_link,'price':item2_price.text.split()[0],'img_url':item2_img_url}
-    item_2_list = list(item_2.values())
-    
-    brand1 = item_1_list[0]
-    item1 = item_1_list[1]
-    link1 = item_1_list[2]
-    price1 = item_1_list[3]
-    image1 = item_1_list[4]
-    
-    brand2 = item_2_list[0]
-    item2 = item_2_list[1]
-    link2 = item_2_list[2]
-    price2 = item_2_list[3]
-    image2 = item_2_list[4]
-
-    return render({'brand1': brand1, 'item1': item1, 'link1': link1, 'price1': price1, 'image1': image1,
-        'brand2': brand2, 'item2': item2, 'link2': link2, 'price2': price2, 'image2': image2})
-
 def recom(request):  # GET
     # profile 받아오기 - region, gender, image 
     profile = request.user.profile
@@ -196,43 +152,67 @@ def recom(request):  # GET
 
     weather_mor = weather(date, region)[0]
     weather_aft = weather(date, region)[1]
-    temp_mor = weather(date, region)[2]
-    temp_aft = weather(date, region)[4]
-
+    temp_mor = int(weather(date, region)[2])
+    temp_aft = int(weather(date, region)[4])
+    
     temp = (temp_mor+temp_aft)/2
 
-    # 추천 함수   .... 마지막에 '맨투맨','청바지',... 이런 식으로 item 나옴
-    # recommendation(temp, gender, closet)  = items1(맨투맨), items2(청바지) 0
-    # 그러면 추천받은 items 따 와서
- 
-    # shoppingmall()함수 수행
-    # shoppingmall(item1(맨투맨))[0] - 맨투맨 첫번째 리스트
-    # brand1 = shoppingmall(item1)[0][0]
-    # name1 = shoppingmall(item1)[0][1]
-    # url1 = shoppingmall(item1)[0][2]
-    # price1 = shoppingmall(item1)[0][3]
-    # image1 = shoppingmall(item1)[0][4] ...
-    
-    # brand2 = shoppingmall(item2)[0]
-    # name2 = shoppingmall(item2)[1]
-    # url2 = shoppingmall(item2)[2]
-    # price2 = shoppingmall(item2)[3]
-    # image2 = shoppingmall(item2)[4]....
+    # user = request.user
+    # closet = Closet.objects.filter(user=user)
+    closet = request.user.closet_set.all()
 
-    # 이런 식으로 상의, 하의, 신발 3개를 shoppingmall() 넣고 실행
-    # 1~6 까지의 shoppingmall list 출력
-     
+    item_pk_list = recommendation(temp, gender, closet) # [1,2,3,4]
+    
+    # instance 
+    items = []
+    for pk in item_pk_list:
+        items.append(Closet.objects.get(pk=pk))
+    
+    # category & image
+    category_list = []  # 추천받은 옷 카테고리 
+    image_list = []  # 추천받은 옷 images
+    for item in items:
+        category_list.append(item.category)
+        image_list.append(item.image)
+
+    
+    shop_image_list = []  # 몰 옷 이미지
+    brand_list = [] # 몰 브랜드 이름
+    name_list = [] # 몰 옷 이름
+    url_list = []  # 몰 옷 유알엘
+    price_list = []  # 몰 옷 가격
+
+    for item in category_list:
+        for infor in shoppingmall(item.name):
+            brand_list.append(infor[0])
+            name_list.append(infor[1])
+            url_list.append(infor[2])
+            price_list.append(infor[3])
+            shop_image_list.append(infor[4])
+            
+    # tips
+    tip_url = []  # tip 주소들
+    tip_thumbnail = []   # tip 썸네일
+    tip_title = []   # tip title
+    
+    for item in category_list:
+        tips = tip_link(item.name, gender)
+        tip_url.append(tips[0])
+        tip_thumbnail.append(tips[1])
+        tip_title.append(tips[2])
+    for image in image_list:
+        # print(dir(image))
+        print('-----')
+        print(image.url)
+        # print(image.path)
     
     context = {
         'weather_mor': weather_mor, 'weather_aft': weather_aft, 
         'temp_mor': temp_mor, 'temp_aft': temp_aft, 
-        # 옷 items 추가
-        'brand1': brand1, 'name1': item1, 'link1': link1, 'price1': price1, 'image1': image1,
-        'brand2': brand2, 'name2': item2, 'link2': link2, 'price2': price2, 'image2': image2, 
-        'brand3': brand3, 'name3': item3, 'link3': link3, 'price3': price3, 'image3': image3,
-        'brand4': brand4, 'name4': item4, 'link4': link4, 'price4': price4, 'image4': image4, 
-        'brand5': brand5, 'name5': item5, 'link5': link5, 'price5': price5, 'image5': image5,
-        'brand6': brand6, 'name6': item6, 'link6': link6, 'price6': price6, 'image6': image6, 
+        'items': items, 'category_list': category_list, 'image_list': image_list,
+        'shop_image_list': shop_image_list, 'brand_list': brand_list, 
+        'name_list': name_list, 'url_list': url_list, 'price_list': price_list,
+        'tip_url': tip_url, 'tip_thumbnail': tip_thumbnail, 'tip_title': tip_title,
     }
     return render(request, 'pages/recom.html', context)
 
@@ -249,36 +229,66 @@ def non_recom(request):  # GET
 
     weather_mor = weather(date, region)[0]
     weather_aft = weather(date, region)[1]
-    temp_mor = weather(date, region)[2]
-    temp_aft = weather(date, region)[4]
+    temp_mor = int(weather(date, region)[2])
+    temp_aft = int(weather(date, region)[4])
 
     temp = (temp_mor+temp_aft)/2
+    
+    closet = pd.DataFrame({
+        'pk': list(range(24)),
+        'category': ['가디건', '가죽자켓', '구두', '긴팔', '니트',
+                     '맨투맨', '면바지', '민소매', '반바지', '반팔',
+                     '부츠', '샌들', '셔츠', '슬렉스', '운동화', 
+                     '워커', '원피스', '자켓', '집업', '청바지', 
+                     '치마' , '코트', '패딩', '후드티'],
+        'color': ['black']*24
+    })
+    
+    item_pk_list = recommendation2(temp, gender, closet) # [1,2,3,4]
+    
+    # 추천 받은 옷 카테고리 
+    category_list = []
+    for pk in item_pk_list:
+        category_list.append(closet['category'][pk])
+    
+    # 이미지 불러오기
+    image_list = []
+    for item in category_list:
+        image_list.append('../static/samples/'+item+'.png')
 
-    # 추천 함수   .... 마지막에 '맨투맨','청바지',... 이런 식으로 item 나옴
-    # recommendation(temp, gender, 기본옷들)  = items1(맨투맨), items2(청바지) 이렇게 나옴
-    # 그러면 추천받은 items 따 와서
+    # 광고를 위한 변수
+    shop_image_list = []  # 몰 옷 이미지
+    brand_list = [] # 몰 브랜드 이름
+    name_list = [] # 몰 옷 이름
+    url_list = []  # 몰 옷 유알엘
+    price_list = []  # 몰 옷 가격
 
-    # shoppingmall()함수 수행
-    # shoppingmall(item1(맨투맨))[0] - 맨투맨 첫번째 리스트
-    # brand1 = shoppingmall(item1)[0][0]
-    # name1 = shoppingmall(item1)[0][1]
-    # url1 = shoppingmall(item1)[0][2]
-    # price1 = shoppingmall(item1)[0][3]
-    # image1 = shoppingmall(item1)[0][4] ...
-
-    # 이런 식으로 상의, 하의, 신발  총 3개를 shoppingmall() 넣고 실행
-    # 1~6 까지의 shoppingmall list 출력
+    for item in category_list:
+        for infor in shoppingmall(item):
+            brand_list.append(infor[0])
+            name_list.append(infor[1])
+            url_list.append(infor[2])
+            price_list.append(infor[3])
+            shop_image_list.append(infor[4])
+            
+    # tips
+    tip_url = []  # tip 주소들
+    tip_thumbnail = [] # tip 썸네일
+    tip_title = []   # tip title
+    
+    for item in category_list:
+        tips = tip_link(item,gender)
+        tip_url.append(tips[0])
+        tip_thumbnail.append(tips[1])
+        tip_title.append(tips[2])
 
     context = {
         'date': date, 'region': region, 'gender': gender, 
         'weather_mor': weather_mor, 'weather_aft': weather_aft, 'temp_mor': temp_mor, 'temp_aft': temp_aft,
-        # 옷 items 추가
-        'brand1': brand1, 'name1': item1, 'link1': link1, 'price1': price1, 'image1': image1,
-        'brand2': brand2, 'name2': item2, 'link2': link2, 'price2': price2, 'image2': image2, 
-        'brand3': brand3, 'name3': item3, 'link3': link3, 'price3': price3, 'image3': image3,
-        'brand4': brand4, 'name4': item4, 'link4': link4, 'price4': price4, 'image4': image4, 
-        'brand5': brand5, 'name5': item5, 'link5': link5, 'price5': price5, 'image5': image5,
-        'brand6': brand6, 'name6': item6, 'link6': link6, 'price6': price6, 'image6': image6, 
+        'category_list': category_list, 'image_list': image_list,
+        'shop_image_list': shop_image_list, 'brand_list': brand_list, 
+        'name_list': name_list, 'url_list': url_list, 'price_list': price_list,
+        'tip_url': tip_url, 'tip_thumbnail': tip_thumbnail, 'tip_title': tip_title,
     }
     return render(request, 'pages/non_recom.html', context)
 
@@ -286,7 +296,7 @@ def logout(request): # POST
     if request.method == 'POST':
         # logout
         auth_logout(request)
-    return redirect('pages:main')
+    return redirect('pages:login')
 
 def delete(request):  #POST
     # if not login-ing, return index
@@ -310,7 +320,7 @@ def edit(request):
             # 3. 유효하다면, 저장
             form.save()
             # 4. update 결과 페이지
-            return redirect('pages:main')
+            return redirect('pages:login')
     else:
         # update form 보여주기
         form = CustomUserChangeForm(instance=user)
@@ -341,56 +351,6 @@ def password(request):
     }
     return render(request, 'pages/password.html', context)
 
-def weather(request):
-    date = request.GET.get('date')
-    region = request.GET.get('region')
-
-    api_key = '%2FJgRrmm9JXaictz6llfBiClpFH5LGECjqZivf5V4Y5HwPgZLMmP38Ho6nqNdwp%2B%2B5z2qvJG6FeelYhnTh9yV%2Bg%3D%3D'
-    pageNo = 1
-    numOfRows = 10
-    
-    pat = re.findall('[a-zA-Z0-9_]+', date)
-    base_date = ''.join(pat)
-    
-    nx = 55
-    ny = 127
-
-    url = 'http://apis.data.go.kr/1360000/VilageFcstInfoService/getUltraSrtNcst'
-    queryParams = '?' + 'ServiceKey='+api_key + '&pageNo='+str(pageNo) + '&numOfRows='+str(numOfRows) + '&dataType=JSON' + '&base_date='+str(base_date)+ '&base_time=1400'+ '&nx='+str(nx) + '&ny='+str(ny)
-
-    response = requests.get(url + queryParams)
-    data = response.json()
-    
-    regions = region.split(' ')
-    do = regions[0]
-    si = regions[1]
-    dong = regions[2]
-
-    source = requests.get('https://search.naver.com/search.naver?sm=top_hty&fbm=1&ie=utf8&query='+do+si+dong+'날씨').text
-
-    soup = BeautifulSoup(source, 'html.parser')
-
-    lists = []
-    icon = soup.select(' .date_info .point_time .ico_state2')
-    for i,j in enumerate(icon) :
-        if i>1:
-            break
-        lists.append(j.get('class')[1])
-
-    cel = soup.select('li.date_info > dl > dd > span')
-    for c,d in enumerate(cel) :
-        if c>2:
-            break
-        lists.append(d.get_text())
-    
-    weather_mor = lists[0]
-    weather_aft = lists[1]
-    temp_mor = lists[2]
-    temp_aft = lists[4]
-
-    return render({'weather_mor': weather_mor, 'weather_aft': weather_aft,
-                    'temp_mor': temp_mor, 'temp_aft': temp_aft})
-
 def search_region(request):  # non_sel에서 
     dong = request.GET.get('dong')
     juso = pd.read_excel(os.path.join(settings.BASE_DIR, 'juso.xlsx'), sheet_name = '최종 업데이트 파일(2020404)')
@@ -400,42 +360,6 @@ def search_region(request):  # non_sel에서
     jibuns = jibun.to_numpy().tolist()
 
     return JsonResponse({'jibuns': jibuns})
-
-def tip_link(request):
-    item = request.GET.get('item')
-    gender = request.GET.get('gender')
-
-    df = pd.read_excel(os.path.join(settings.BASE_DIR, '팁.xlsx'))
-    df = df[['category', 'gender', 'url','image_url']] 
-    
-    youtube = df.loc[(df['category']==item) & (df['gender']==gender), ['url','image_url']]
-    youtube = youtube.values.tolist()
-    youtube  = random.choice(youtube)
-    
-    return youtube
-#     tip_link = youtube[0]
-#     tip_thumbnail = youtube[1]
-
-def tips(request):
-    gender = request.user.profile.gender
-
-    # 추천함수로부터 상의, 하의, 신발, 아우터 items 받아옴
-    # tip_link(item1, gender)[0]  -> tip_link1
-    # tip_link(item1, gender)[1]  -> tip_thumbnail1
-    # tip_link(item2, gender)[0]  -> tip_link2
-    # tip_link(item2, gender)[1]  -> tip_thumbnail2
-    # tip_link(item3, gender)[0]  -> tip_link3
-    # tip_link(item3, gender)[1]  -> tip_thumbnail3
-    # tip_link(item4, gender)[0]  -> tip_link4
-    # tip_link(item4, gender)[1]  -> tip_thumbnail4
-
-    context = {
-        'tip_link1': tip_link1, 'tip_thumbnail1': tip_thumbnail1,
-        'tip_link2': tip_link2, 'tip_thumbnail2': tip_thumbnail2,
-        'tip_link3': tip_link3, 'tip_thumbnail3': tip_thumbnail3,
-        'tip_link4': tip_link4, 'tip_thumbnail4': tip_thumbnail4,
-    }
-    return render(request, 'pages/tips.html', context)
 
 def profile_detail(request):
     # 1:n - user.comment_set / comment.user

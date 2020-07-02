@@ -38,7 +38,7 @@ urlpatterns = [
     path('non_sel/', views.non_sel, name='non_sel'),
 
     # 팁
-    path('recom/tips/', views.tips, name='tips'),
+    # path('recom/tips/', views.tips, name='tips'),
 
     # 회원 정보 수정
     path('edit/', views.edit, name='edit'),

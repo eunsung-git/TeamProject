@@ -10,6 +10,8 @@ class CustomUserChangeForm(UserChangeForm):
         fields = ('username',)
 
 class ProfileForm(forms.ModelForm):
+    region = forms.CharField(widget=forms.TextInput(attrs={'placeholder': '동/읍/면', 
+                                                            'autocomplete':'off'}))
     class Meta:
         model = Profile
         fields = ('gender', 'region') 
