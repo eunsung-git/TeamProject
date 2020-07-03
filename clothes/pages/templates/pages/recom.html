@@ -22,7 +22,7 @@
              <form action="{% url 'pages:logout' %}" method="POST">
                 {% csrf_token %}
                 <!-- <input type="submit" value='Logout'> -->
-                <input class='btn btn-secondary btn-sm' type='submit' value='Logout'>
+                <input class='btn btn-primary btn-sm' type='submit' value='Logout'>
             </form>
         {% else %}
             <a href="{% url 'pages:login' %}">Login</a>
@@ -114,8 +114,6 @@
                     <img src="{{ image_list.3.url }}" alt="{{ image_list.3.url }}" width="330px" height="300px"> 
                 </div>
                 {% endif %}
-                <!-- <div style="width:350px; height:300px; border:1px solid black;"> -->
-                
                 {% if weather_mor == 'ws9' or weather_mor == 'ws22' or weather_mor == 'ws15' %}
                     <div style="width:330px; height:300px; border:1px solid white;"></div>
                         <img src="../static/umbrella.jpg" alt="umbrella" width="320px" height="290px">
@@ -125,9 +123,6 @@
                         <img src="../static/umbrella.jpg" alt="umbrella" width="320px" height="290px">
                     </div>   
                 {% endif %}
-                <!-- </div> -->
-                <!-- <div style="width:350px; height:150px; border:1px solid green;">
-                </div>  -->
             </div>
         </div>
 

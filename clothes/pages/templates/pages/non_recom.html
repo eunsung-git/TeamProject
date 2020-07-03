@@ -9,8 +9,14 @@
     <style type="text/css">
         body {
             overflow:scroll;
-            background-color: skyblue;
-            /* background-size: ; */
+            /* background-color:rgb(182, 218, 233); */
+        }
+        nav {
+             /* background-color: rgb(208, 240, 248); */
+            /* background-color: rgb(214, 234, 243);  */
+        }
+        .jumbotron jumbotron bg-cover {
+            background-color: rgb(202, 227, 238);
         }
     </style>
 </head>
@@ -27,68 +33,72 @@
             <input class='btn btn-secondary btn-sm' type='submit' value='Logout'>
         </form>
     {% else %}
-        <a class="btn btn-secondary" href="{% url 'pages:login' %}" role="button">Home</a>
-        <a class="btn btn-secondary" href="{% url 'pages:signup' %}" role="button">Signup</a>
+        <a class="btn btn-primary" href="{% url 'pages:login' %}" role="button">Home</a>
+        <a class="btn btn-primary" href="{% url 'pages:signup' %}" role="button">Signup</a>
     {% endif %}
 </nav>
 
 <!-- 날씨 data 띄우기 -->
 
 <center>
-<h2 style="font-size: 32px; font-weight: bold;">날씨 정보</h2><br>
-<fieldset style="width:500px; height: 100px; border:1 solid blue;">
-    <div align='center' class="weather" style="margin: 0 auto;" >
-        <div style="width:250px; height:290px; border:1px solid black; float:left;">
-            <span>오전</span>
-            {% if weather_mor == 'ws1' %} 
-            <img src="{% static 'ws1.png' %}" alt="ws1" width="250px" height="200px"> <br>
-            <span style="font-size: 20px; text-align: center; font-weight: bold;">맑음</span>
-            {% elif weather_mor == 'ws5' %} 
-            <img src="{% static 'ws5.png' %}" alt="ws5" width="250px" height="200px"> <br>
-            <span style="font-size: 20px; text-align: center; font-weight: bold;">구름많음</span>
-            {% elif weather_mor == 'ws7' %} 
-            <img src="{% static 'ws7.png' %}" alt="ws7" width="250px" height="200px"> <br>
-            <span style="font-size: 20px; text-align: center; font-weight: bold;">흐림</span>
-            {% elif weather_mor == 'ws9' %} 
-            <img src="{% static 'ws9.png' %}" alt="ws9" width="250px" height="200px"> <br>
-            <span style="font-size: 20px; text-align: center; font-weight: bold;">비</span>
-            {% elif weather_mor == 'ws22' %} 
-            <img src="{% static 'ws22.png' %}" alt="ws22" width="250px" height="200px"><br> 
-            <span style="font-size: 20px; text-align: center; font-weight: bold;">흐리고 가끔 비</span>
-            {% elif weather_mor == 'ws15' %} 
-            <img src="{% static 'ws15.png' %}" alt="ws15" width="250px" height="200px"> <br>
-            <span style="font-size: 20px; text-align: center; font-weight: bold;">흐리고 한때 소나기</span>
-            {% endif %}
-            <br>
-            <span>최저 {{ temp_mor }}℃</span>
-        </div>
-    <!-- 날씨가 더 추가될 가능성 있음 -->
-        <div style="width:250px; height:290px; border:1px solid black; float:left;">
-            <span>오전</span>
-            {% if weather_aft == 'ws1' %} 
-            <img src="{% static 'ws1.png' %}" alt="ws1" width="250px" height="200px"><br>
-            <span style="font-size: 20px; text-align: center; font-weight: bold;">맑음</span>
-            {% elif weather_aft == 'ws5' %} 
-            <img src="{% static 'ws5.png' %}" alt="ws5" width="250px" height="200px"><br>
-            <span style="font-size: 20px; text-align: center; font-weight: bold;">구름많음</span>
-            {% elif weather_aft == 'ws7' %} 
-            <img src="{% static 'ws7.png' %}" alt="ws7" width="250px" height="200px"> <br>
-            <span style="font-size: 20px; text-align: center; font-weight: bold;">흐림</span>
-            {% elif weather_aft == 'ws9' %} 
-            <img src="{% static 'ws9.png' %}" alt="ws9" width="250px" height="200px"> <br>
-            <span style="font-size: 20px; text-align: center; font-weight: bold;">비</span>
-            {% elif weather_aft == 'ws22' %} 
-            <img src="{% static 'ws22.png' %}" alt="ws22" width="250px" height="200px"> <br>
-            <span style="font-size: 20px; text-align: center; font-weight: bold;">흐리고 가끔 비</span>
-            {% elif weather_aft == 'ws15' %} 
-            <img src="{% static 'ws15.png' %}" alt="ws15" width="250px" height="200px"> <br>
-            <span style="font-size: 20px; text-align: center; font-weight: bold;">흐리고 한때 소나기</span>
-            {% endif %}
-            <br>
-            <span>최고 {{ temp_aft }}℃</span>
-        </div>
-    </div>  
-</fieldset>
+    <div class="jumbotron jumbotron bg-cover">
+        <div class="overlay"></div>
+        <div class="container"></div>
+        <h2 style="font-size: 32px; font-weight: bold;">날씨 정보</h2><br>
+        <fieldset style="width:500px; height: 100px; border:1 solid blue;">
+            <div align='center' class="weather" style="margin: 0 auto;" >
+                <div style="width:250px; height:290px; border:1px solid black; float:left;">
+                    <span>오전</span>
+                    {% if weather_mor == 'ws1' %} 
+                    <img src="{% static 'ws1.png' %}" alt="ws1" width="250px" height="200px"> <br>
+                    <span style="font-size: 20px; text-align: center; font-weight: bold;">맑음</span>
+                    {% elif weather_mor == 'ws5' %} 
+                    <img src="{% static 'ws5.png' %}" alt="ws5" width="250px" height="200px"> <br>
+                    <span style="font-size: 20px; text-align: center; font-weight: bold;">구름많음</span>
+                    {% elif weather_mor == 'ws7' %} 
+                    <img src="{% static 'ws7.png' %}" alt="ws7" width="250px" height="200px"> <br>
+                    <span style="font-size: 20px; text-align: center; font-weight: bold;">흐림</span>
+                    {% elif weather_mor == 'ws9' %} 
+                    <img src="{% static 'ws9.png' %}" alt="ws9" width="250px" height="200px"> <br>
+                    <span style="font-size: 20px; text-align: center; font-weight: bold;">비</span>
+                    {% elif weather_mor == 'ws22' %} 
+                    <img src="{% static 'ws22.png' %}" alt="ws22" width="250px" height="200px"><br> 
+                    <span style="font-size: 20px; text-align: center; font-weight: bold;">흐리고 가끔 비</span>
+                    {% elif weather_mor == 'ws15' %} 
+                    <img src="{% static 'ws15.png' %}" alt="ws15" width="250px" height="200px"> <br>
+                    <span style="font-size: 20px; text-align: center; font-weight: bold;">흐리고 한때 소나기</span>
+                    {% endif %}
+                    <br>
+                    <span>최저 {{ temp_mor }}℃</span>
+                </div>
+            <!-- 날씨가 더 추가될 가능성 있음 -->
+                <div style="width:250px; height:290px; border:1px solid black; float:left;">
+                    <span>오전</span>
+                    {% if weather_aft == 'ws1' %} 
+                    <img src="{% static 'ws1.png' %}" alt="ws1" width="250px" height="200px"><br>
+                    <span style="font-size: 20px; text-align: center; font-weight: bold;">맑음</span>
+                    {% elif weather_aft == 'ws5' %} 
+                    <img src="{% static 'ws5.png' %}" alt="ws5" width="250px" height="200px"><br>
+                    <span style="font-size: 20px; text-align: center; font-weight: bold;">구름많음</span>
+                    {% elif weather_aft == 'ws7' %} 
+                    <img src="{% static 'ws7.png' %}" alt="ws7" width="250px" height="200px"> <br>
+                    <span style="font-size: 20px; text-align: center; font-weight: bold;">흐림</span>
+                    {% elif weather_aft == 'ws9' %} 
+                    <img src="{% static 'ws9.png' %}" alt="ws9" width="250px" height="200px"> <br>
+                    <span style="font-size: 20px; text-align: center; font-weight: bold;">비</span>
+                    {% elif weather_aft == 'ws22' %} 
+                    <img src="{% static 'ws22.png' %}" alt="ws22" width="250px" height="200px"> <br>
+                    <span style="font-size: 20px; text-align: center; font-weight: bold;">흐리고 가끔 비</span>
+                    {% elif weather_aft == 'ws15' %} 
+                    <img src="{% static 'ws15.png' %}" alt="ws15" width="250px" height="200px"> <br>
+                    <span style="font-size: 20px; text-align: center; font-weight: bold;">흐리고 한때 소나기</span>
+                    {% endif %}
+                    <br>
+                    <span>최고 {{ temp_aft }}℃</span>
+                </div>
+            </div>  
+        </fieldset>
+    </div>
 </center>
 <br><br><br><br><br><br><br><br><br><br>
 <center>
