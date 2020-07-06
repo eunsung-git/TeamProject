@@ -12,33 +12,26 @@
       body {
           overflow:scroll;
           position: relative;
-          /* position: absolute; */
           margin: 0 auto;
           margin-left: auto; 
           margin-right: auto;
           margin-top: auto;
           margin-bottom: auto;
-          background-image: url('../static/4.jpg');
+          background-image: url('../../static/4.jpg');
           background-repeat: no-repeat;
           background-size: cover;
-      }
-      fieldset {
-          display:inline-block;
-          text-align: left;
       }
   </style>
 </head>
 <body>
-     <!-- closet nav 복붙 -->
+
     <nav>
     {% if user.is_authenticated %}
         <a href="{% url 'pages:profile_detail' %}" style="background-color:black; font-size: 24px; color: white;">
             {{ user.username }}
         </a>
-        <!-- <span style="background-color:yellow; font-size: 24px;">{{ user.username }} 님, 안녕하세요!</span> -->
          <form action="{% url 'pages:logout' %}" method="POST">
             {% csrf_token %}
-            <!-- <input type="submit" value='Logout'> -->
             <input class='btn btn-secondary btn-sm' type='submit' value='Logout'>
         </form>
     {% else %}
@@ -47,7 +40,36 @@
     {% endif %}
   </nav>
 
-  <center>
+  <br><br><br><br><br>
+
+  <div class="container">
+
+    <div class="alert alert-light pb-0 pt-0 pr-0 pl-0" role="alert" style="text-align: center; font-size: 26px; color: black;">
+      <strong>Clothes Upload</strong>
+    </div>
+
+    <br><br>
+
+    <div class="card bg-transparent text-white" style="text-align: center;">
+      
+      <div class="card-header">
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          {{ form.as_p }}
+          
+          <input class='btn btn-dark' type='submit' value='Upload'>
+        </form>
+      </div>
+      
+      <div class="card-footer">
+        <a class="btn btn-secondary" href="{% url 'pages:closet' %}" role="button">My Closet</a>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- <center>
     <br><br><br><br><br><br><br>
     <h1 style="color: white;" align="center">Clothes Upload</h1>
     <br>
@@ -57,13 +79,13 @@
         {% csrf_token %}
         {{ form.as_p }}
         <br>
-        <!-- <input type="submit" value="Upload" style="width:80px; height: 40px; font-size: 18px;"> -->
         <input class='btn btn-dark' type='submit' value='Upload'>
       </form>
       <br><br>
       <a class="btn btn-dark btn-sm" href="{% url 'pages:closet' %}" role="button">My Closet</a>
     </fieldset>
-  </center>
+  </center> -->
+
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>

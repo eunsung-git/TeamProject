@@ -28,7 +28,8 @@
              <form action="{% url 'pages:logout' %}" method="POST">
                 {% csrf_token %}
                 <!-- <input type="submit" value='Logout'> -->
-                <input class='btn btn-secondary btn-sm' type='submit' value='Logout'>
+                <input class='btn btn-dark btn-sm' type='submit' value='Logout'>
+                <a class="btn btn-secondary btn-sm" href="{% url 'pages:profile_detail' %}" role="button">Back to Profile</a>
             </form>
         {% else %}
             <a href="{% url 'pages:login' %}">Login</a>
@@ -36,10 +37,17 @@
         {% endif %}
     </nav>
 
-    <h1 align="center">My Clothes</h1>
- 
-    <!-- <a href="{% url 'pages:clothes' %}">New clothes Upload</a> -->
-    <a class="btn btn-info" href="{% url 'pages:clothes' %}" role="button">New clothes Upload</a>   
+
+<div class="container">
+    <div class="alert alert-secondary pb-0 pt-0 pr-0 pl-0" role="alert" style="text-align: center; font-size: 26px; color: black;">
+        <strong>{{ user.username }}'s Closet</strong>
+    </div>
+    <br>
+    <div style="text-align: center;">
+        <a class="btn btn-info" href="{% url 'pages:clothes' %}" role="button">New clothes Upload</a>
+        <a class="btn btn-primary" href="{% url 'pages:login_sel' %}" role="button">Styling</a> 
+    </div>
+     
     <br><br>
   
     <ul>
@@ -58,7 +66,7 @@
         {% endfor %}
     </div> 
     </ul>
-
+</div>
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>

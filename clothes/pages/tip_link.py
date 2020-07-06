@@ -4,7 +4,7 @@ import random
 import os
 
 def tip_link(item, gender):
-    df = pd.read_excel(os.path.join(settings.BASE_DIR, '팁.xlsx'))
+    df = pd.read_excel(os.path.join(settings.BASE_DIR, 'tip.xlsx'))
     
     youtube = df.loc[(df['category']==item) & (df['gender']==gender), ['url','image_url','title']]
     youtube = youtube.values.tolist()

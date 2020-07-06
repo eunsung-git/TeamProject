@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,14 +8,14 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <style type="text/css">
         body {
-        background-image: url('../static/4.jpg');
+        background-image: url('../../static/4.jpg');
         background-repeat: no-repeat;
         background-size: cover;
         }
     </style>
 </head>
 <body>
-    <!-- closet nav 복붙 -->
+    
     <nav>
         {% if user.is_authenticated %}
             <a href="{% url 'pages:profile_detail' %}" style="background-color:black; font-size: 24px; color: white;">
@@ -30,7 +31,92 @@
         {% endif %}
     </nav>
     
-    <center>
+    <br><br><br><br><br>
+    <div class="container">
+
+        <div class="alert alert-light pb-0 pt-0 pr-0 pl-0" role="alert" style="text-align: center; font-size: 26px; color: black;">
+            <strong>{{ user.username }}'s Profile Edit</strong>
+        </div>
+        <br>
+        <form action="" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="card bg-transparent" style="text-align: center;">
+                <ul class="list-group list-group-flush" >
+                    <li class="list-group-item bg-transparent text-white">
+                        <p>
+                            {{ form.gender.label }}
+                            {{ form.gender }}
+                            {{ form.gender.errors }}
+                        </p>
+                        <p>
+                            {{ form.region.label }}
+                            {{ form.region }}
+                            <a id="region-search">찾기</a>
+                            {{ form.region.errors }}
+                        </p>
+                        
+                        <ul id="region-result">
+                        
+                        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+                        <script>
+                            var regionInput = document.getElementById('id_region')
+                            var searchButton = document.getElementById('region-search')
+                            var regionResult = document.getElementById('region-result')
+        
+                            var search = function () {
+                                dong = regionInput.value
+        
+                                regionResult.innerHTML = '<li>Searching...</li>'
+                                axios.get('/search_region/',  {
+                                                params: {
+                                                    dong: dong
+                                                }
+                                            })
+                                        .then(function (response) {
+                                            regions = response.data.jibuns.map(function (region) {
+                                                return region.join(' ')
+                                            })
+                                            regionResult.innerHTML = ''
+                                            if (regions.length > 0) {
+                                                regions.forEach(function (region) {
+                                                    const li = document.createElement('li')
+                                                    li.classList.add('region-result-item')
+                                                    li.append(region)
+                                                    regionResult.append(li)
+                                                })
+        
+                                                items = document.querySelectorAll('.region-result-item')
+                                                items.forEach(function (element) {
+                                                    element.addEventListener('click', function (e) {
+                                                            regionInput.value = e.target.innerText
+                                                            regionResult.innerHTML = ''
+                                                        })
+                                                    })
+                                            } else {
+                                                const li = document.createElement('li')
+                                                li.classList.add('region-result-item')
+                                                li.append('검색 결과가 없습니다 :(')
+                                                regionResult.append(li)
+                                            }
+                                            
+                                        })
+                            }
+                            searchButton.addEventListener('click', search)
+                        </script>
+                    </li>
+                
+                </ul>
+                <div class="card-footer bg-transparent" style="text-align: center;">
+                    <input class='btn btn-dark' type='submit' value='Update'>
+                    <a class="btn btn-secondary" href="{% url 'pages:profile_detail' %}" role="button">Back to Profile</a>
+                </div>
+            </div>
+        </form>
+
+    </div>
+
+
+    <!-- <center>
         <br><br><br><br><br><br><br>
         <h1 style='color:white;' align='center'>Profile Update</h1>
         <fieldset style="width:400px; height: 250px;">
@@ -98,13 +184,10 @@
                 </script>
                 <br>
 
-                <!-- {{ profile_form.gender }}<br> -->
-            
-                <!-- <input type="submit" value="Update" style="width:80px; height: 40px; font-size: 18px;"> -->
                 <input class='btn btn-dark' type='submit' value='Update'>
             </form>
         </fieldset>
-    </center>
+    </center> -->
 
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

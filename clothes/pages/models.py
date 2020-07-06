@@ -1,6 +1,4 @@
 from django.db import models
-from imagekit.models import ProcessedImageField
-from imagekit.processors import Thumbnail
 from django.conf import settings
 
 class Profile(models.Model):
@@ -22,9 +20,13 @@ class Category(models.Model):
         return self.name
 
 
+def closet_image_path(instance, filename):
+    return f'closet/{instance.user.pk}/{filename}'
+
+
 class Closet(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
-    image = models.ImageField(blank=True, upload_to='clothes/images/')
+    image = models.ImageField(blank=True, upload_to=closet_image_path)
     color = models.CharField(max_length=20, blank=True)
     

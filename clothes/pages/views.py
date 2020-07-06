@@ -25,10 +25,10 @@ from skimage import io
 
 # Create your views here.
 
-top_list = ['후드티','반팔','민소매','맨투맨','니트','긴팔']
+top_list = ['후드티','반팔','민소매','맨투맨','니트','긴팔','셔츠']
 bottom_list = ['치마','청바지','슬렉스','면바지','반바지']
-outer_list = ['코트','패딩','집업','자켓','가디건']
-shoes_list = ['운동화','워커','구두','샌들']
+outer_list = ['코트','패딩','집업','자켓','가디건', '가죽자켓']
+shoes_list = ['운동화','워커','구두','샌들','부츠']
 
 def login(request):
     # if login-ing, return index
@@ -114,7 +114,8 @@ def clothes(request): # 옷 업로드
 
 
 def closet(request):  # 옷 업로드 확인
-    clothes_list = Closet.objects.all()
+    clothes_list = request.user.closet_set.all()
+
     context = {
         'clothes_list': clothes_list,
     }
@@ -150,10 +151,11 @@ def recom(request):  # GET
     region = request.user.profile.region
     gender = request.user.profile.gender
 
-    weather_mor = weather(date, region)[0]
-    weather_aft = weather(date, region)[1]
-    temp_mor = int(weather(date, region)[2])
-    temp_aft = int(weather(date, region)[4])
+    weather_result = weather(date, region)
+    weather_mor = weather_result[0]
+    weather_aft = weather_result[1]
+    temp_mor = int(weather_result[2])
+    temp_aft = int(weather_result[3])
     
     temp = (temp_mor+temp_aft)/2
 
@@ -164,9 +166,11 @@ def recom(request):  # GET
     item_pk_list = recommendation(temp, gender, closet) # [1,2,3,4]
     
     # instance 
-    items = []
-    for pk in item_pk_list:
-        items.append(Closet.objects.get(pk=pk))
+    # items = []
+    # for pk in item_pk_list:
+    #     items.append(Closet.objects.get(pk=pk))
+
+    items = request.user.closet_set.filter(pk__in=item_pk_list)
     
     # category & image
     category_list = []  # 추천받은 옷 카테고리 
@@ -174,7 +178,6 @@ def recom(request):  # GET
     for item in items:
         category_list.append(item.category)
         image_list.append(item.image)
-
     
     shop_image_list = []  # 몰 옷 이미지
     brand_list = [] # 몰 브랜드 이름
@@ -200,20 +203,31 @@ def recom(request):  # GET
         tip_url.append(tips[0])
         tip_thumbnail.append(tips[1])
         tip_title.append(tips[2])
-    for image in image_list:
-        # print(dir(image))
-        print('-----')
-        print(image.url)
-        # print(image.path)
+    
+    weather_status = {
+        'ws1': '맑음',
+        'ws5': '구름 많음',
+        'ws7': '흐림',
+        'ws9': '비',
+        'ws15': '흐리고 한때 소나기',
+        'ws22': '흐리고 가끔 비',
+    }
+
+    umbrella = True if weather_mor in ['ws9', 'ws15', 'ws22'] or weather_aft in ['ws9', 'ws15', 'ws22'] else False
+
+    outer_image = image_list.pop() if category_list[-1] in outer_list else ''
     
     context = {
-        'weather_mor': weather_mor, 'weather_aft': weather_aft, 
-        'temp_mor': temp_mor, 'temp_aft': temp_aft, 
+        'weather_mor': weather_mor, 'weather_aft': weather_aft, 'temp_mor': temp_mor, 'temp_aft': temp_aft, 
+        'weather_mor_status': weather_status.get(weather_mor),
+        'weather_aft_status': weather_status.get(weather_aft),
+        'umbrella': umbrella, 'outer_image': outer_image,
         'items': items, 'category_list': category_list, 'image_list': image_list,
         'shop_image_list': shop_image_list, 'brand_list': brand_list, 
         'name_list': name_list, 'url_list': url_list, 'price_list': price_list,
         'tip_url': tip_url, 'tip_thumbnail': tip_thumbnail, 'tip_title': tip_title,
     }
+
     return render(request, 'pages/recom.html', context)
 
 def non_sel(request): # GET
@@ -227,10 +241,11 @@ def non_recom(request):  # GET
     region = request.GET.get('region')
     gender = request.GET.get('gender')
 
-    weather_mor = weather(date, region)[0]
-    weather_aft = weather(date, region)[1]
-    temp_mor = int(weather(date, region)[2])
-    temp_aft = int(weather(date, region)[4])
+    weather_result = weather(date, region)
+    weather_mor = weather_result[0]
+    weather_aft = weather_result[1]
+    temp_mor = int(weather_result[2])
+    temp_aft = int(weather_result[3])
 
     temp = (temp_mor+temp_aft)/2
     
@@ -256,6 +271,10 @@ def non_recom(request):  # GET
     for item in category_list:
         image_list.append('../static/samples/'+item+'.png')
 
+    # clothes_list = {}
+    # for pk in item_pk_list:
+    #     clothes_list[closet['category'][pk]] = '../static/samples/'+closet['category'][pk]+'.png'
+
     # 광고를 위한 변수
     shop_image_list = []  # 몰 옷 이미지
     brand_list = [] # 몰 브랜드 이름
@@ -277,15 +296,32 @@ def non_recom(request):  # GET
     tip_title = []   # tip title
     
     for item in category_list:
-        tips = tip_link(item,gender)
+        tips = tip_link(item, gender)
         tip_url.append(tips[0])
         tip_thumbnail.append(tips[1])
         tip_title.append(tips[2])
 
+    weather_status = {
+        'ws1': '맑음',
+        'ws5': '구름 많음',
+        'ws7': '흐림',
+        'ws9': '비',
+        'ws15': '흐리고 한때 소나기',
+        'ws22': '흐리고 가끔 비',
+    }
+
+    umbrella = True if weather_mor in ['ws9', 'ws15', 'ws22'] or weather_aft in ['ws9', 'ws15', 'ws22'] else False
+
+    outer_image = image_list.pop() if category_list[-1] in outer_list else ''
+
     context = {
         'date': date, 'region': region, 'gender': gender, 
         'weather_mor': weather_mor, 'weather_aft': weather_aft, 'temp_mor': temp_mor, 'temp_aft': temp_aft,
+        'weather_mor_status': weather_status.get(weather_mor),
+        'weather_aft_status': weather_status.get(weather_aft),
+        'umbrella': umbrella,
         'category_list': category_list, 'image_list': image_list,
+        'outer_image': outer_image,
         'shop_image_list': shop_image_list, 'brand_list': brand_list, 
         'name_list': name_list, 'url_list': url_list, 'price_list': price_list,
         'tip_url': tip_url, 'tip_thumbnail': tip_thumbnail, 'tip_title': tip_title,
@@ -301,12 +337,12 @@ def logout(request): # POST
 def delete(request):  #POST
     # if not login-ing, return index
     if not request.user.is_authenticated:
-        return redirect('pages:main')
+        return redirect('pages:login')
 
     # user 삭제
     if request.method == 'POST':
         request.user.delete()
-    return redirect('pages:main')
+    return redirect('pages:login')
 
 def edit(request):
     user = request.user
@@ -376,7 +412,7 @@ def profile_edit(request):
     if request.method == 'POST':
         # profile update
         # 1.data를 form에 넣기
-        profile_form = ProfileForm(request.POST, request.FILES, instance=profile)
+        form = ProfileForm(request.POST, request.FILES, instance=profile)
         # 2. 유효성 검사
         if form.is_valid():
             # 3. 저장

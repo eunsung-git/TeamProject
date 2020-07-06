@@ -1,6 +1,8 @@
 import requests
 import urllib.request
 from bs4 import BeautifulSoup
+from django.conf import settings
+
 
 def shoppingmall(item):
     result = []
@@ -19,7 +21,7 @@ def shoppingmall(item):
     item1_price = item1.find('p',{'class':'price'})
     
     item1_img_url = item1.find('img')['data-original']
-    urllib.request.urlretrieve('http:'+item1_img_url, './crawling/'+item+'1.jpg')
+    # urllib.request.urlretrieve('http:'+item1_img_url, f'{settings.BASE_DIR}/crawling/'+item+'1.jpg')
 
     item_1 = {'brand':item1_brand,'name':item1_name, 'link':item1_link,'price':item1_price.text.split()[0],'img_url':item1_img_url}
     item_1_list = list(item_1.values())
@@ -33,7 +35,7 @@ def shoppingmall(item):
     item2_price = item2.find('p',{'class':'price'})
     
     item2_img_url = item2.find('img')['data-original']
-    urllib.request.urlretrieve('http:'+item2_img_url, './crawling/'+item+'2.jpg')
+    # urllib.request.urlretrieve('http:'+item2_img_url, f'{settings.BASE_DIR}/crawling/'+item+'2.jpg')
 
     item_2 = {'brand':item2_brand,'name':item2_name, 'link':item2_link,'price':item2_price.text.split()[0],'img_url':item2_img_url}
     item_2_list = list(item_2.values())
